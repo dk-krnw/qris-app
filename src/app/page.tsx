@@ -97,7 +97,7 @@ export default function QRISGenerator() {
             <div>
               <h1 className="text-xl font-bold tracking-tight">QRIS Dinamis</h1>
               <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                Sistem Kasir Digital
+                Generator Instan Paymnent
               </p>
             </div>
           </div>
