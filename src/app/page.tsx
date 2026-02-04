@@ -196,8 +196,11 @@ export default function QRISGenerator() {
   >
     {/* Background Grid Decoration (Opsional) */}
     <div className="absolute inset-0 opacity-10" 
-      style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', size: '20px 20px', backgroundSize: '30px 30px' }}>
-    </div>
+  style={{ 
+    backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', 
+    backgroundSize: '30px 30px' 
+  }} 
+/>
 
     {/* Header Logo */}
     <div className="relative z-10 flex flex-col items-center mt-4 mb-8">
