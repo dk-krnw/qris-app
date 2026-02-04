@@ -14,29 +14,24 @@ export default function QRISGenerator() {
   const qrRef = useRef<HTMLDivElement>(null); 
   const [darkMode, setDarkMode] = useState(false);
 
+  const downloadRef = useRef<HTMLDivElement>(null); // Ref baru khusus download
+
   const downloadQRIS = async () => {
-    if (qrRef.current === null) return;
-    
-    try {
-      const dataUrl = await toPng(qrRef.current, { 
-        cacheBust: true, 
-        backgroundColor: '#ffffff',
-        style: {
-          padding: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }
-      });
-      const link = document.createElement('a');
-      link.download = `QRIS-${amount || 'pembayaran'}.png`;
-      link.href = dataUrl;
-      link.click();
-    } catch (err) {
-      console.error('Gagal mendownload QRIS:', err);
-    }
-  };
+  if (downloadRef.current === null) return;
+  
+  try {
+    const dataUrl = await toPng(downloadRef.current, { 
+      cacheBust: true,
+      pixelRatio: 2, // Agar hasil download tajam/HD
+    });
+    const link = document.createElement('a');
+    link.download = `QRIS-${amount || 'pembayaran'}.png`;
+    link.href = dataUrl;
+    link.click();
+  } catch (err) {
+    console.error('Gagal mendownload QRIS:', err);
+  }
+};
 
   const calculateCRC16 = (str: string): string => {
     let crc = 0xFFFF;
@@ -192,6 +187,65 @@ export default function QRISGenerator() {
           Made with ❤️ and 🍜 by dkrnw
         </p>
       </Card>
+
+      {/* --- TEMPLATE KHUSUS DOWNLOAD (HIDDEN FROM UI) --- */}
+<div style={{ position: 'absolute', left: '-9999px', top: '0' }}>
+  <div 
+    ref={downloadRef} 
+    className="bg-[#002d62] p-8 flex flex-col items-center w-[400px] min-h-[600px] font-sans relative overflow-hidden"
+  >
+    {/* Background Grid Decoration (Opsional) */}
+    <div className="absolute inset-0 opacity-10" 
+      style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', size: '20px 20px', backgroundSize: '30px 30px' }}>
     </div>
+
+    {/* Header Logo */}
+    <div className="relative z-10 flex flex-col items-center mt-4 mb-8">
+      <div className="flex flex-col items-center">
+        <span className="text-white text-2xl font-bold tracking-tight">CuanSend</span>
+        <span className="text-white text-[10px] tracking-[0.3em] uppercase opacity-70 -mt-1">Integrated</span>
+      </div>
+      <h1 className="text-white text-2xl font-semibold mt-6 tracking-wide">QRIS Dinamis</h1>
+    </div>
+
+    {/* White Card Container */}
+    <div className="relative z-10 bg-white rounded-[40px] p-10 w-full flex flex-col items-center shadow-2xl">
+      
+
+      {/* QRIS Logo & QR Code */}
+      <div className="flex flex-col items-center">
+        <div className="mb-2">
+           {/* Logo QRIS Text */}
+           <div className="flex items-center justify-center font-black italic text-2xl tracking-tighter text-gray-800">
+             <span className="text-black">Q</span>RIS
+           </div>
+        </div>
+        
+        <div className="bg-white p-2">
+          <QRCodeSVG
+            value={qrisData}
+            size={240}
+            level="H"
+            includeMargin={false}
+          />
+        </div>
+      </div>
+
+      {/* Decorative Close Button */}
+      <div className="w-full mt-10">
+         <div className="border-[2.5px] border-gray-900 rounded-full py-3 text-center text-gray-900 font-bold text-lg">
+        Nominal : Rp {amount}
+         </div>
+      </div>
+    </div>
+
+    {/* Footer Logo/Watermark (Optional) */}
+    <div className="mt-auto mb-6 opacity-30">
+      <p className="text-white text-[10px]">Secure Payment by CuanSend</p>
+    </div>
+  </div>
+</div>
+    </div>
+    
   );
 }
